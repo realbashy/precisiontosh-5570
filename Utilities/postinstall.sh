@@ -1,6 +1,6 @@
 #!/bin/bash
 # ==============================================================================
-# ASUS Vivobook 15 (X1504ZA) — Intel Iris Xe 1536MB Metal 2 Post-Install Tool
+# Intel Iris Xe 1536MB Metal 2 Post-Install Tool
 # Author: Jigyanshu Thakur & Antigravity
 # Repository: https://github.com/jigyanshu-codes/ASUS-X1504ZA-AlderLake-Hackintosh
 # ==============================================================================
@@ -19,7 +19,7 @@ NC='\033[0m' # No Color
 clear
 echo -e "${CYAN}${BOLD}"
 echo "================================================================================"
-echo "    ASUS Vivobook 15 (X1504ZA) — Intel Iris Xe 1536MB Metal Restorer           "
+echo "                          Enable Iris XE acceleration                           "       
 echo "================================================================================"
 echo -e "${NC}"
 
@@ -46,7 +46,7 @@ BOOT_ARGS=$(nvram boot-args 2>/dev/null || echo "")
 if [[ "$BOOT_ARGS" != *"-allow3d"* ]] || [[ "$BOOT_ARGS" != *"-amfipassbeta"* ]]; then
     echo -e "  -> ${YELLOW}[NOTE] Ensure OpenCore config.plist contains: -allow3d -disablegfxfirmware -amfipassbeta${NC}"
 else
-    echo -e "  -> OpenCore boot-args verified: ${GREEN}-allow3d and -amfipassbeta detected!${NC}"
+    echo -e "  -> ${GREEN}-allow3d and -amfipassbeta detected!${NC}"
 fi
 
 # Step 2: Purge Conflicting Audio Kexts
@@ -176,27 +176,26 @@ sync
 # Critical Warning & Reboot Prompt
 echo ""
 echo -e "${RED}${BOLD}================================================================================${NC}"
-echo -e "${YELLOW}${BOLD}           CRITICAL WARNING: DO NOT TOUCH SYSTEM SETTINGS!                      ${NC}"
+echo -e "${YELLOW}${BOLD}                 WARNING: DO NOT TOUCH SYSTEM SETTINGS!                      ${NC}"
 echo -e "${RED}${BOLD}================================================================================${NC}"
 echo -e "${BOLD}"
 echo "  1. If macOS pops up a notification saying 'System Extension Blocked' or"
-echo "     'System Extension needs approval', IGNORE IT COMPLETELY!"
+echo "     'System Extension needs approval,' IGNORE IT COMPLETELY!"
 echo ""
 echo "  2. DO NOT open System Settings -> Privacy & Security."
 echo "  3. DO NOT click 'Allow' or 'Restart' inside System Settings."
 echo ""
-echo -e "  ${YELLOW}WHY?${NC}"
-echo "  Clicking 'Restart' inside System Settings triggers macOS's native policy"
+echo -e "  ${YELLOW}Why?${NC}"
+echo "  Clicking 'Restart' inside System Settings triggers macOS' native policy"
 echo "  daemon to recompile AuxKC WITHOUT the '--allow-missing-kdk' parameter."
 echo "  This silently purges the patched graphics drivers and reverts your system"
 echo "  back to the unaccelerated 7 MB VESA fallback!"
 echo ""
-echo -e "${GREEN}${BOLD}  HOW TO BOOT CLEANLY:${NC}"
-echo "  1. Press [Enter] right now in this Terminal window to reboot."
-echo "  2. At the OpenCore Boot Picker, press Spacebar -> select 'Reset NVRAM'."
-echo "  3. Boot into macOS, and your Intel Iris Xe 1536 MB Metal 2 acceleration"
-echo "     and native brightness slider will be fully active!"
+echo -e "${GREEN}${BOLD}Instead:${NC}"
+echo "  1. Press Enter right now in this window to reboot."
+echo "  2. At the OpenCore boot picker, select 'Reset NVRAM'."
+echo "  3. Boot into macOS, and acceleration will be fully active!"
 echo -e "${RED}${BOLD}================================================================================${NC}"
 echo ""
-read -p "Press [Enter] to reboot now..."
+read -p "Press Enter to reboot now..."
 reboot
