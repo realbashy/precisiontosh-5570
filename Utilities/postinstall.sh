@@ -19,7 +19,7 @@ NC='\033[0m' # No Color
 clear
 echo -e "${CYAN}${BOLD}"
 echo "================================================================================"
-echo "                          Enable Iris XE acceleration                           "       
+echo "                          Enable Iris Xe acceleration                           "       
 echo "================================================================================"
 echo -e "${NC}"
 
