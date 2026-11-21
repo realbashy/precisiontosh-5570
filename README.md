@@ -32,21 +32,21 @@ A verified, actively maintained OpenCore `1.0.8` EFI and technical guide for run
 
 | Component | Hardware Details | Status | Notes |
 | :--- | :--- | :---: | :--- |
-| **Model** | ASUS Vivobook 15 `X1504ZA` / `Vivobook_ASUSLaptop X1504ZA_X1504ZA` | `Supported` | Motherboard ID: `X1504ZA` |
-| **Processor** | Intel Core i5-1235U (10 Cores: 2P + 8E, Alder Lake-U) | `Working` | Native BIOS 10-thread topology + `CpuTscSync` (`TSC_sync_margin=0 -cputsclock`); `CpuTopologyRebuild` disabled |
+| **Model** | Dell Precision 5570 | `Supported` ||
+| **Processor** | Intel Core i7-12800H | `Working` | Native BIOS 10-thread topology + `CpuTscSync` (`TSC_sync_margin=0 -cputsclock`); `CpuTopologyRebuild` disabled |
 | **Integrated GPU** | Intel Iris Xe Graphics GT2 (`8086:46A8`) | `Working` | 1536 MB VRAM, Metal 2, Full QE/CI via `WhateverXe v0.7.0` |
-| **RAM** | 20 GB DDR4 3200 MHz (4 GB Onboard + 16 GB SO-DIMM) | `Working` | Dual-Channel |
-| **Storage** | 512 GB Samsung PM9B1 NVMe SSD (`MZVL4512HBLU-00BTW`) | `Working` | Managed via `NVMeFix.kext v1.1.4` |
-| **Display** | 15.6" Full HD (1920x1080) 60Hz eDP Panel | `Working` | Native brightness slider & Fn hotkeys |
-| **Trackpad** | ASUS Precision Touchpad `ASUP1200` (`INTC1055` on I2C1 `00:15.1`) | `Working (Polling)` | Smooth cursor & clicks via `VoodooI2C v2.9.1` + `VoodooI2CHID` (`-vi2c-force-polling`) |
-| **Keyboard** | ASUS I8042 PS/2 Keyboard | `Working` | `VoodooPS2Controller v2.3.8` + `BrightnessKeys v1.0.4` + `AsusSMC v1.4.1` |
-| **Audio (Internal)** | Realtek ALC256 (`10EC:0256`) on Intel `8086:51C8` | `Working` | Speakers & 3.5 mm jack via `AppleALC v1.9.8` + `SimpleHDA v1.0.1` (`alcid=41`, in-RAM via Lilu) |
-| **Audio (External)** | USB-C / USB-A DACs & Bluetooth Audio Devices | `Working` | `0` CoreAudio deadlines missed / `0` overloads (`AppleUSBAudio` + `SimpleMtkBtPatcher`) |
+| **Dedicated GPU**  | NVIDIA RTX A1000 GPU (4 GB VRAM) | `Not tested` | Using nullmoth’s [nvidia-macos-driver](https://github.com/nullmoth/nvidia-macos-driver), it shows up and shows Metal 2 acceleration, however this model has no way to route any of its outputs to it.
+| **RAM** | 16 GB DDR5 4800 MHz (8 GB SODIMMs) | `Working` | Dual-Channel |
+| **Storage** | 2 TB Samsung 970 EVO Plus NVMe SSD (`MZVL4512HBLU-00BTW`) | `Working` | Managed via `NVMeFix.kext v1.1.4` |
+| **Display** | 15” Full HD (1920x1200) 60Hz eDP Panel | `Working` | Native brightness slider |
+| **Trackpad** | Precision Touchpad  | `Working (Polling)` | Smooth cursor & clicks via `VoodooI2C v2.9.1` + `VoodooI2CHID` (`-vi2c-force-polling`) |
+| **Keyboard** | PS/2 Keyboard | `Working` | `VoodooPS2Controller v2.3.8` + `BrightnessKeys v1.0.4` + `AsusSMC v1.4.1` |
+| **Audio (Internal)** | Realtek ALC256 (`10EC:0256`) on Intel `8086:51C8` | `Working` | Sound from the internal speakers only outputs through the tweeters |
 | **Bluetooth** | MediaTek MT7902 USB Bluetooth (AzureWave `13d3:3579`) | `Working` | Scanning, pairing, mic input & A2DP audio via [SimpleMtkBtFw v1.1.1](https://github.com/jigyanshu-codes/SimpleMtkBtFw/releases/tag/v1.1.1) |
-| **Wi-Fi** | MediaTek Wi-Fi 6 MT7902 M.2 PCIe (`14C3:7902`) | `In Progress` | Driver under development ([SimpleMtkWlan](https://github.com/jigyanshu-codes/SimpleMtkWlan)); USB Tethering works out of the box |
-| **Webcam** | ShineTech `USB2.0 HD UVC WebCam` (USB port `HS09`) | `Working` | Native plug-and-play |
-| **USB Ports** | USB-C, USB-A 3.2, USB-A 2.0 + internal BT (`HS10`) & Cam (`HS09`) | `Working` | Custom 10-port `UTBMap.kext` + `USBToolBox v1.2.0` + `XHCI-unsupported v0.9.2` |
-| **Battery / Power** | ASUS Battery & Power Telemetry | `Working` | Accurate readout & AC state via `SMCBatteryManager` + `AsusSMC` |
+| **Wi-Fi** | Intel AX211 | `Iffy` | Can connect with [forbiddenitlwm](https://github.com/VedCloud/forbiddenitlwm), but it randomly disconnects from Wi-Fi. |
+| **Webcam** | Sonix webcam | `Not Tested` | Native plug-and-play |
+| **USB Ports** | Two Thunderbolt 4 ports on the left side of the laptop and a USB 3.2 Gen 2 port with DisplayPort Alt Mode on the right side | `Working` | USB works, however Thunderbolt support has not been tested. |
+| **Battery / Power** | | `Working` | Accurate readout & AC state via `SMCBatteryManager` |
 
 ---
 
@@ -61,21 +61,11 @@ Alder Lake-U integrated graphics (`8086:46A8`) require `WhateverXe.kext v0.7.0` 
 ### 2. Glitch-Free Audio: Internal Speakers, USB DAC & Bluetooth
 Earlier builds suffered severe CoreAudio stalls (~2 seconds of clean playback followed by crackling, cutouts, `273–330 ms` `scheduler_latency`, `Deadline is prior to Start time`, `Audio IO Overload`, and `0xE00002EE` `kIOReturnIsoTooOld` kernel errors) across **all** audio devices — Internal Speakers, Headphones, USB DACs, and Bluetooth.
 
-#### A. Root Cause & CPU/TSC Fix
-* Firmware on the X1504ZA boots with 10 threads exposed (`MP services threads 10 (enabled 10)`).
-* Running `CpuTopologyRebuild.kext` (`ctrsmt=off`) together with OpenCore's `force HT enabled` kernel patches created a mismatched topology in XNU (`10` physical vs forced logical expectations), causing CoreAudio's real-time workgroups to wake hundreds of milliseconds past deadlines.
-* **Solution in `config.plist`:**
-  * Disabled `CpuTopologyRebuild.kext` and all 3 `force HT enabled` kernel patches (`Enabled = False`), keeping `Kernel -> Quirks -> ProvideCurrentCpuInfo = True`.
-  * Enabled `CpuTscSync.kext` (`v1.1.3`) with `TSC_sync_margin=0 -cputsclock` in `boot-args`.
-* **Verified Diagnostic Result (`audio_diag_report-6.txt`):** `Deadline prior to Start time: 0`, `Audio IO Overload: 0`, `Safety Violations: 0`, `PLAYBACK_TIME_MS: 1466.51 ms`.
-
 #### B. Internal Speakers & 3.5 mm Jack on macOS Tahoe (`AppleALC` + `SimpleHDA`)
 * Because Apple removed `AppleHDA.kext` starting in macOS Tahoe, [`SimpleHDA.kext`](https://github.com/laobamac/SimpleHDA) (`v1.0.1`) injects and restores the AppleHDA stack **strictly in RAM via OpenCore & Lilu** (`DisableLinkeditJettison = True`).
-* **Why This Never Breaks Iris Xe Graphics:** Unlike legacy `HDAUniversal.kext` or `VoodooHDA.kext` installed to `/Library/Extensions` (which trigger `kmutil` rebuilds and hijack `8086:51C8`), `SimpleHDA.kext` writes nothing to macOS's disk or `AuxKC`.
 * **Audio Properties:**
   * `DeviceProperties -> Add -> PciRoot(0x0)/Pci(0x1f,0x3)`: `layout-id` = `<29000000>` (`41`)
   * `boot-args`: `alcid=41 shda-lang=en` (adds clean English device labels)
-* **Usage Note (`alcid=41`):** In **System Settings → Sound → Output**, `alcid=41` lists **`Built-in Speaker`** and **`Built-in Headphone`** as separate output entries. Select `Built-in Speaker` for internal speakers, or `Built-in Headphone` when using the 3.5 mm jack. *(If you prefer automatic jack switching on a single `Built-in Output` device, you can test changing `alcid=41` to `alcid=13` in `boot-args`.)*
 
 ### 3. MediaTek MT7902 Bluetooth (`13d3:3579`)
 MediaTek MT7902 USB Bluetooth works natively with Bluetooth audio output, mic input, scanning, and pairing:
@@ -83,16 +73,11 @@ MediaTek MT7902 USB Bluetooth works natively with Bluetooth audio output, mic in
 * **NVRAM (`7C436110-AB2A-4BBB-A880-FE41995C9F82`):** `bluetoothInternalControllerInfo` (`14` zero bytes) and `bluetoothExternalDongleFailed` (`00`) present in both `Add` and `Delete`.
 * **Boot Flags:** `-btlfxboardid -btlfxallowanyaddr` in `boot-args`.
 
-### 4. Wi-Fi Workaround (MT7902 PCIe `14C3:7902`)
-* The internal **MediaTek MT7902 PCIe Wi-Fi** card is disabled cleanly in ACPI (`SSDT-Disable_Network_RP07.aml`) while the open-source macOS driver is being developed at [SimpleMtkWlan](https://github.com/jigyanshu-codes/SimpleMtkWlan).
-* **Zero-Cost Daily Option:** iPhone or Android **USB Tethering** works immediately out of the box (pair with [`Utilities/fix_tethering.sh`](Utilities/fix_tethering.sh) if hotspot drops on phone lock).
-* **Hardware Upgrade Option:** Swapping the M.2 2230 card to an Intel `AX200 / AX201 / AX210` (`AirportItlwm`/`itlwm`) or Broadcom `BCM94360NG` enables onboard Wi-Fi.
-
 ---
 
 ## Post-Installation: Intel Iris Xe 1536 MB Acceleration Restorer
 
-After installing macOS (or if macOS ever falls back to **Intel Iris Xe Graphics 7 MB** VESA mode), run our automated script to install/rebuild `WhateverXe-Graphics-0.4.0` into `AuxiliaryKernelExtensions.kc`:
+After installing macOS (or if macOS ever falls back to **Intel Iris Xe Graphics 7 MB** VESA mode), run the automated script to install/rebuild `WhateverXe-Graphics-0.4.0` into `AuxiliaryKernelExtensions.kc`:
 
 ```bash
 sudo ./Utilities/activate_acceleration.sh
@@ -107,13 +92,13 @@ sudo ./Utilities/activate_acceleration.sh
 5. Builds `/Library/KernelCollections/AuxiliaryKernelExtensions.kc` via `kmutil create -n aux --allow-missing-kdk --no-authentication`.
 
 > [!CAUTION]
-> ### CRITICAL: Avoid The "System Settings Trap"
-> When `activate_acceleration.sh` completes, macOS may show *"System Extension Blocked"*.
+> ### Avoid The “System Settings Trap”
+> When `activate_acceleration.sh` completes, macOS may show *“System Extension Blocked.”*
 >
 > 1. **DO NOT open System Settings → Privacy & Security!**
-> 2. **DO NOT click 'Allow' or 'Restart' inside System Settings!**
+> 2. **DO NOT click “Allow” or “Restart” inside System Settings!**
 >
-> Clicking Restart inside System Settings runs macOS's `kmutil rebuild` **without** `--allow-missing-kdk`, wiping your Iris Xe drivers back to 7 MB VESA mode.
+> Clicking Restart inside System Settings runs macOS’ `kmutil rebuild` **without** `--allow-missing-kdk`, wiping your Iris Xe drivers back to 7 MB VESA mode.
 >
 > **Safe Reboot:** Press **`[Enter]`** directly in the Terminal script prompt → press **Spacebar → Reset NVRAM** once at the OpenCore picker → boot macOS normally.
 
@@ -122,8 +107,7 @@ sudo ./Utilities/activate_acceleration.sh
 ## Installation & Setup Guide
 
 ### 1. BIOS Settings (F2)
-* **Disable:** Secure Boot, Fast Boot, Intel VMD / RAID (`VMD Configuration` → `Disabled` / AHCI).
-* **Enable:** Intel Virtualization Technology (`VT-x`).
+* **Disable** Secure Boot (this may mess up Windows Hello if you are dual booting)
 
 ### 2. Generate Unique SMBIOS Before Booting (`MacBookPro16,2`)
 > [!IMPORTANT]
@@ -182,7 +166,6 @@ Bundled in [`Utilities/`](Utilities/) (all Unix LF line endings):
 │       │   ├── SimpleMtkBtFw.kext              # v1.1.1 — MediaTek MT7902 firmware loader
 │       │   ├── SimpleMtkBtPatcher.kext         # v1.1.1 — MediaTek Bluetoothd/Audio patcher
 │       │   ├── VirtualSMC.kext                 # v1.3.9 — SMC emulator
-│       │   ├── AsusSMC.kext                    # v1.4.1 — ASUS laptop Fn & fan controls
 │       │   ├── SMCBatteryManager.kext          # v1.3.9 — Battery telemetry
 │       │   ├── BrightnessKeys.kext             # v1.0.4 — Native brightness hotkeys
 │       │   ├── CpuTscSync.kext                 # v1.1.3 — TSC sync across P/E cores
@@ -207,18 +190,16 @@ Bundled in [`Utilities/`](Utilities/) (all Unix LF line endings):
 
 ## Credits & Acknowledgements
 
+* ### **[jigyanshu-codes](https://github.com/jigyanshu-codes/)** – The original EFI
 * **[Acidanthera](https://github.com/acidanthera)** — OpenCorePkg, Lilu, VirtualSMC, AppleALC, BrcmPatchRAM (`BlueToolFixup`), NVMeFix, RestrictEvents, VoodooPS2, BrightnessKeys
 * **[WhateverXe Team (`b00t0x`)](https://github.com/b00t0x/WhateverXe)** — Pioneering Intel Iris Xe graphics acceleration on macOS
-* **[laobamac](https://github.com/laobamac)** — `SimpleHDA` (`cn.laobamac.SimpleHDA`) & upstream `SimpleMtkBtFw`
-* **[flxxxxddd](https://github.com/flxxxxddd/SimpleMtkBtFw)** — `SimpleMtkBtFw` connac2 improvements & AirPods/BT audio patcher
-* **[jigyanshu-codes](https://github.com/jigyanshu-codes/SimpleMtkBtFw/releases/tag/v1.1.1)** — MediaTek MT7902 (`0x7902` / `13d3:3579`) firmware support, X1504ZA Alder Lake CoreAudio timing fix, and end-to-end verification
+* **[laobamac](https://github.com/laobamac)** — `SimpleHDA` (`cn.laobamac.SimpleHDA`)
 * **[Alexandred](https://github.com/alexandred)** & **[CoolStar](https://github.com/coolstar)** — `VoodooI2C` & `VoodooGPIO`
 * **[DhinakG / USBToolBox](https://github.com/USBToolBox)** — `USBToolBox` & custom port mapping
-* **[hieplpvip](https://github.com/hieplpvip/AsusSMC)** & **[lvs1974](https://github.com/lvs1974/CpuTscSync)** — `AsusSMC` & `CpuTscSync`
 * **[Dortania](https://dortania.github.io/)** — OpenCore Install & ACPI Guides
 * **[Belugaa_01](https://www.reddit.com/user/Belugaa_01/)** — Initial Alder Lake-U WhateverXe offset discovery
+* 
 
 ---
 
-### Community & Support
-If this repository helped you get your ASUS Vivobook or Alder Lake laptop running macOS smoothly with Metal 2 graphics, speakers, and MT7902 Bluetooth, please leave a Star on GitHub!
+Please feel free to leave a star if you found this helpful
