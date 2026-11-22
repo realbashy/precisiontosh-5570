@@ -1,12 +1,5 @@
 # Dell Precision 5570 — Complete macOS OpenCore Guide & EFI
 
-[![macOS](https://img.shields.io/badge/macOS-Tahoe%2026.7.2%20%7C%20Sonoma%2014.x%20%7C%20Sequoia%2015.x-blue?style=for-the-badge&logo=apple)](https://www.apple.com/macos)
-[![OpenCore](https://img.shields.io/badge/OpenCore-1.0.8-green?style=for-the-badge&logo=codefactor)](https://github.com/acidanthera/OpenCorePkg)
-[![Intel](https://img.shields.io/badge/CPU-Intel%20Core%20i7–12800H%20(Alder%20Lake)-0071C5?style=for-the-badge&logo=intel)](https://www.intel.com)
-[![Graphics](https://img.shields.io/badge/GPU-Intel%20Iris%20Xe%201536MB%20Metal%202-orange?style=for-the-badge&logo=intel)](https://www.intel.com)
-[![Bluetooth](https://img.shields.io/badge/Bluetooth-MT7902%20Working-0082FC?style=for-the-badge&logo=bluetooth)](https://github.com/jigyanshu-codes/SimpleMtkBtFw/releases/tag/v1.1.1)
-[![Audio](https://img.shields.io/badge/Audio-ALC256%20%2B%20USB%20%2B%20BT-success?style=for-the-badge)](#2-glitch-free-audio-internal-speakers-usb-dac--bluetooth)
-
 A actively maintained OpenCore 1.0.8 EFI guide for running macOS Tahoe 26.7.2 on a Dell Precision 5570 with an Intel i7-12800H and Iris X<sup>e</sup> graphics.
 
 ---
