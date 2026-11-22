@@ -1,12 +1,12 @@
 # Dell Precision 5570 — Complete macOS OpenCore Guide & EFI
 
-A actively maintained OpenCore 1.0.8 EFI guide for running macOS Tahoe 26.7.2 on a Dell Precision 5570 with an Intel i7-12800H and Iris X<sup>e</sup> graphics.
+An actively maintained OpenCore 1.0.8 EFI guide for running macOS Tahoe 26.7.2 on a Dell Precision 5570 with an Intel i7-12800H and Iris X<sup>e</sup> graphics.
 
 ---
 
 ## Screenshots & System Verification
 
-| System Overview & Specs | Iris X<sup>e</sup> Metal 2 Graphics Acceleration |
+| System Overview & Specs | Iris X<sup>e</sup> Metal 2 Graphics Acceleration (with the A1000) |
 | :---: | :---: |
 | ![System Overview](Screenshots/01_System_Overview.png) | ![Metal 2 QE/CI](Screenshots/02_GPU_Metal_Acceleration.png) |
 
@@ -22,7 +22,7 @@ A actively maintained OpenCore 1.0.8 EFI guide for running macOS Tahoe 26.7.2 on
 | :--- | :--- | :---: | :--- |
 | **Model** | Dell Precision 5570 | `Supported` ||
 | **Processor** | Intel Core i7-12800H | `Working` | Native BIOS 10-thread topology + `CpuTscSync` (`TSC_sync_margin=0 -cputsclock`); `CpuTopologyRebuild` disabled |
-| **Integrated GPU** | Intel Iris Xe Graphics GT2 (`8086:46A8`) | `Working` | 1536 MB VRAM, Metal 2, Full QE/CI via `WhateverXe v0.7.0` |
+| **Integrated GPU** | Intel Iris X<sup>e</sup> Graphics GT2 (`8086:46A8`) | `Working` | 1536 MB VRAM, Metal 2, Full QE/CI via `WhateverXe v0.7.0` |
 | **Dedicated GPU**  | NVIDIA RTX A1000 GPU (4 GB VRAM) | `Not tested` | Using nullmoth’s [nvidia-macos-driver](https://github.com/nullmoth/nvidia-macos-driver), it shows up and shows Metal 2 acceleration, however this model has no way to route any of its display outputs to it.
 | **RAM** | 16 GB DDR5 4800 MHz (8 GB SODIMMs) | `Working` | Dual-Channel |
 | **Storage** | 2 TB Samsung 970 EVO Plus NVMe SSD | `Working` | Managed via `NVMeFix.kext v1.1.4` |
@@ -63,7 +63,7 @@ sudo ./Utilities/activate_acceleration.sh
 >
 > Clicking Restart inside System Settings runs macOS’ `kmutil rebuild` **without** `--allow-missing-kdk`, wiping your Iris X<sup>e</sup> drivers back to 7 MB VESA mode.
 >
-> **Safe Reboot:** Press <kbd>Enter</kbd> directly in the Terminal script prompt → press **Spacebar → Reset NVRAM** once at the OpenCore picker → boot macOS normally.
+> **Safe Reboot:** Press <kbd>Enter</kbd> directly in the Terminal script prompt → press **<kbd>Spacebar</kbd> → Reset NVRAM** once at the OpenCore picker → boot macOS normally.
 
 ---
 
@@ -76,7 +76,7 @@ sudo ./Utilities/activate_acceleration.sh
 > [!IMPORTANT]
 > The [`EFI/OC/config.plist`](EFI/OC/config.plist) in this repository contains sanitized placeholder serial numbers (`C02000000000`). Generate your own unique SMBIOS values before signing into Apple ID / iCloud!
 
-Use **[GenSMBIOS](https://github.com/corpnewt/GenSMBIOS)** for **`MacBookPro16,2`** (see [`Utilities/generate_smbios.md`](Utilities/generate_smbios.md)) and update `PlatformInfo -> Generic` (`SystemSerialNumber`, `MLB`, `SystemUUID`, `ROM`) in ProperTree.
+Use **[GenSMBIOS](https://github.com/corpnewt/GenSMBIOS)** for **`MacBookPro16,2`** (see “[Generating an SMBIOS”](../../wiki/Generating-an-SMBIOS)) and update `PlatformInfo -> Generic` (`SystemSerialNumber`, `MLB`, `SystemUUID`, `ROM`) in ProperTree.
 
 ### 3. Deploy to USB & Boot
 1. Copy the [`EFI/`](EFI/) folder from this repository to the root of your FAT32 EFI partition (test on a USB drive first before touching your internal SSD!).
@@ -88,9 +88,8 @@ Use **[GenSMBIOS](https://github.com/corpnewt/GenSMBIOS)** for **`MacBookPro16,2
 ## Post-Installation Utilities
 
 Bundled in [`Utilities/`](Utilities/) (all Unix LF line endings):
-* [`activate_acceleration.sh`](Utilities/activate_acceleration.sh) & [`Restore_1536MB_Acceleration.command`](Utilities/Restore_1536MB_Acceleration.command) — Installs/restores 1536 MB Iris Xe Metal 2 `AuxKC` cleanly.
+* [`activate_acceleration.sh`](Utilities/activate_acceleration.sh) & [`Restore_1536MB_Acceleration.command`](Utilities/Restore_1536MB_Acceleration.command) — Installs/restores 1536 MB Iris X<sup>e</sup> Metal 2 `AuxKC` cleanly.
 * [`optimize_power.sh`](Utilities/optimize_power.sh) — Configures `pmset` (disables hibernation/sleepimage to keep USB peripherals stable).
-* [`generate_smbios.md`](Utilities/generate_smbios.md) — Step-by-step GenSMBIOS guide for `MacBookPro16,2`.
 
 ---
 
@@ -165,7 +164,7 @@ precisiontosh-5570/
 
 * ### **[jigyanshu-codes](https://github.com/jigyanshu-codes/)** – The original EFI
 * **[Acidanthera](https://github.com/acidanthera)** — OpenCorePkg, Lilu, VirtualSMC, AppleALC, BrcmPatchRAM (`BlueToolFixup`), NVMeFix, RestrictEvents, VoodooPS2, BrightnessKeys
-* **[WhateverXe Team (`b00t0x`)](https://github.com/b00t0x/WhateverXe)** — Pioneering Intel Iris Xe graphics acceleration on macOS
+* **[WhateverXe Team (`b00t0x`)](https://github.com/b00t0x/WhateverXe)** — Pioneering Intel Iris X<sup>e</sup> graphics acceleration on macOS
 * **[laobamac](https://github.com/laobamac)** — `SimpleHDA` (`cn.laobamac.SimpleHDA`)
 * **[Alexandred](https://github.com/alexandred)** & **[CoolStar](https://github.com/coolstar)** — `VoodooI2C` & `VoodooGPIO`
 * **[DhinakG / USBToolBox](https://github.com/USBToolBox)** — `USBToolBox` & custom port mapping
