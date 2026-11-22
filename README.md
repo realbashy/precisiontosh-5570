@@ -76,7 +76,7 @@ sudo ./Utilities/activate_acceleration.sh
 > [!IMPORTANT]
 > The [`EFI/OC/config.plist`](EFI/OC/config.plist) in this repository contains sanitized placeholder serial numbers (`C02000000000`). Generate your own unique SMBIOS values before signing into Apple ID / iCloud!
 
-Use **[GenSMBIOS](https://github.com/corpnewt/GenSMBIOS)** for **`MacBookPro16,2`** (see “[Generating an SMBIOS”](../../wiki/Generating-an-SMBIOS)) and update `PlatformInfo -> Generic` (`SystemSerialNumber`, `MLB`, `SystemUUID`, `ROM`) in ProperTree.
+Use **[GenSMBIOS](https://github.com/corpnewt/GenSMBIOS)** for **`MacBookPro16,2`** (see “[Generating an SMBIOS](../../wiki/Generating-an-SMBIOS)”) and update `PlatformInfo -> Generic` (`SystemSerialNumber`, `MLB`, `SystemUUID`, `ROM`) in ProperTree.
 
 ### 3. Deploy to USB & Boot
 1. Copy the [`EFI/`](EFI/) folder from this repository to the root of your FAT32 EFI partition (test on a USB drive first before touching your internal SSD!).
@@ -88,7 +88,7 @@ Use **[GenSMBIOS](https://github.com/corpnewt/GenSMBIOS)** for **`MacBookPro16,2
 ## Post-Installation Utilities
 
 Bundled in [`Utilities/`](Utilities/) (all Unix LF line endings):
-* [`activate_acceleration.sh`](Utilities/activate_acceleration.sh) & [`Restore_1536MB_Acceleration.command`](Utilities/Restore_1536MB_Acceleration.command) — Installs/restores 1536 MB Iris X<sup>e</sup> Metal 2 `AuxKC` cleanly.
+* [`postinstall.sh`](Utilities/postinstall.sh) & [`Restore_1536MB_Acceleration.command`](Utilities/Restore_1536MB_Acceleration.command) — Installs/restores 1536 MB Iris X<sup>e</sup> Metal 2 `AuxKC` cleanly.
 * [`optimize_power.sh`](Utilities/optimize_power.sh) — Configures `pmset` (disables hibernation/sleepimage to keep USB peripherals stable).
 
 ---
