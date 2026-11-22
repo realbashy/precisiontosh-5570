@@ -32,7 +32,7 @@ An actively maintained OpenCore 1.0.8 EFI guide for running macOS Tahoe 26.7.2 o
 | **Audio (Internal)** | Realtek ALC289  on Intel `8086:51C8` | `Somewhat working` | Sound from the internal speakers only outputs through the tweeters, not the subwoofers. |
 | **Bluetooth** | Intel AX211 (AzureWave `13d3:3579`) | `Working` | Scanning, pairing, mic input & A2DP audio with [BlueToolFixup](https://github.com/acidanthera/BrcmPatchRAM/), [IntelBTPatcher](https://github.com/OpenIntelWireless/IntelBluetoothFirmware/), & [IntelBluetoothFirmware](https://github.com/OpenIntelWireless/IntelBluetoothFirmware/) |
 | **Wi-Fi** | Intel AX211 | `Iffy` | Can connect with [forbiddenitlwm](https://github.com/VedCloud/forbiddenitlwm), but Wi-Fi has been shown to not connect randomly, usually after a restart or when turning it off and on. |
-| **Webcam** | Sonix webcam | `Not Tested` | Native plug-and-play |
+| **Webcam** | Sonix webcam | `Working` | Native plug-and-play |
 | **USB Ports** | Two Thunderbolt 4 ports on the left side of the laptop and a USB 3.2 Gen 2 port with DisplayPort Alt Mode on the right side | `Working` | USB works, however Thunderbolt support has not been tested. |
 | **Battery / Power** | | `Working` | Accurate readout & AC state via `SMCBatteryManager` |
 
@@ -81,7 +81,7 @@ Use **[GenSMBIOS](https://github.com/corpnewt/GenSMBIOS)** for **`MacBookPro16,2
 ### 3. Deploy to USB & Boot
 1. Copy the [`EFI/`](EFI/) folder from this repository to the root of your FAT32 EFI partition (test on a USB drive first before touching your internal SSD!).
 2. **Do not delete or overwrite `EFI/Microsoft` on your internal NVMe SSD** when dual-booting Windows.
-3. Boot via <kbd>F12</kbd> → select USB → press **Spacebar → Reset NVRAM** on first boot → boot macOS.
+3. Boot via <kbd>F12</kbd> → select USB → press **<kbd>Spacebar</kbd> → Reset NVRAM** on first boot → boot macOS.
 
 ---
 
