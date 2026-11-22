@@ -43,7 +43,7 @@ An actively maintained OpenCore 1.0.8 EFI guide for running macOS Tahoe 26.7.2 o
 After installing macOS (or if macOS ever starts up non-accelerated), run the automated script to install/rebuild `WhateverXe-Graphics-0.4.0` into `AuxiliaryKernelExtensions.kc`:
 
 ```bash
-sudo ./Utilities/activate_acceleration.sh
+sudo ./Utilities/postinstall.sh
 ```
 (*Or double-click [`Utilities/Restore_1536MB_Acceleration.command`](Utilities/Restore_1536MB_Acceleration.command) in the Finder.*)
 
