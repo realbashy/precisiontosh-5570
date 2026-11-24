@@ -23,18 +23,22 @@ An actively maintained OpenCore 1.0.8 EFI guide for running macOS Tahoe 26.7.2 o
 | **Model** | Dell Precision 5570 | `Supported` ||
 | **Processor** | Intel Core i7-12800H | `Working` | Native BIOS 10-thread topology + `CpuTscSync` (`TSC_sync_margin=0 -cputsclock`); `CpuTopologyRebuild` disabled |
 | **Integrated GPU** | Intel Iris X<sup>e</sup> Graphics GT2 (`8086:46A8`) | `Working` | 1536 MB VRAM, Metal 2, Full QE/CI via `WhateverXe v0.7.0` |
-| **Dedicated GPU**  | NVIDIA RTX A1000 GPU (4 GB VRAM) | `Not tested` | Using nullmoth’s [nvidia-macos-driver](https://github.com/nullmoth/nvidia-macos-driver), it shows up and shows Metal 2 acceleration, however this model has no way to route any of its display outputs to it.
+| **Dedicated GPU**  | NVIDIA RTX A1000 GPU (4 GB VRAM) | `Not tested` | Using nullmoth’s [nvidia-macos-driver](https://github.com/nullmoth/nvidia-macos-driver), it shows up and shows Metal 2 acceleration, however this model has no way to route any of its display outputs to it. |
 | **RAM** | 16 GB DDR5 4800 MHz (8 GB SODIMMs) | `Working` | Dual-Channel |
-| **Storage** | 2 TB Samsung 970 EVO Plus NVMe SSD | `Working` | Managed via `NVMeFix.kext v1.1.4` |
+| **Storage** | 2 TB Samsung 970 EVO Plus NVMe SSD / 2 TB WD_BLACK SN770 NVMe SSD | `Working` | Managed via `NVMeFix.kext v1.1.4` |
 | **Display** | 15″ Full HD (1920x1200) 60Hz eDP Panel | `Working` | Native brightness slider |
+| **External Displays** | Through the Thunderbolt 4 ports or USB-C port with DP Alt Mode | `Not working` | [^2]
 | **Trackpad** | Precision Touchpad  | `Working` | Smooth cursor, clicks & gestures via `VoodooI2C v2.9.1` + `VoodooI2CHID` (`-vi2c-force-polling`) |
 | **Keyboard** | PS/2 Keyboard | `Working` | `VoodooPS2Controller v2.3.8` |
-| **Audio (Internal)** | Realtek ALC289  on Intel `8086:51C8` | `Somewhat working` | Sound from the internal speakers only outputs through the tweeters, not the subwoofers. |
-| **Bluetooth** | Intel AX211 (AzureWave `13d3:3579`) | `Working` | Scanning, pairing, mic input & A2DP audio with [BlueToolFixup](https://github.com/acidanthera/BrcmPatchRAM/), [IntelBTPatcher](https://github.com/OpenIntelWireless/IntelBluetoothFirmware/), & [IntelBluetoothFirmware](https://github.com/OpenIntelWireless/IntelBluetoothFirmware/) |
-| **Wi-Fi** | Intel AX211 | `Iffy` | Can connect with [forbiddenitlwm](https://github.com/VedCloud/forbiddenitlwm), but Wi-Fi has been shown to not connect randomly, usually after a restart or when turning it off and on. |
+| **Audio (Internal)** | Realtek ALC289 | `Somewhat working` | Sound from the internal speakers only outputs through the tweeters, not the subwoofers. With `alcid=33`, the sound outputs exclusively through the woofers.  |
+| **Bluetooth** | Intel AX211 | `Working` | Scanning, pairing, mic input & A2DP audio with [BlueToolFixup](https://github.com/acidanthera/BrcmPatchRAM/), [IntelBTPatcher](https://github.com/OpenIntelWireless/IntelBluetoothFirmware/), & [IntelBluetoothFirmware](https://github.com/OpenIntelWireless/IntelBluetoothFirmware/) |
+| **Wi-Fi** | Intel AX211 | `Iffy` | Can connect with [forbiddenitlwm](https://github.com/VedCloud/forbiddenitlwm). |
 | **Webcam** | Sonix webcam | `Working` | Native plug-and-play |
-| **USB Ports** | Two Thunderbolt 4 ports on the left side of the laptop and a USB 3.2 Gen 2 port with DisplayPort Alt Mode on the right side | `Working` | USB works, however Thunderbolt support has not been tested. |
+| **USB Ports** | Two Thunderbolt 4 ports on the left side of the laptop and a USB 3.2 Gen 2 port with DisplayPort Alt Mode on the right side | `Working` | USB works, and devices connected over Thunderbolt *may* work[^1]. |
 | **Battery / Power** | | `Working` | Accurate readout & AC state via `SMCBatteryManager` |
+
+[^1]: I do not have any other Thunderbolt devices except for the dock for me to test; however if I booted with the dock plugged in, a icon in the menu bar showed up with the option to turn off what it thinks are PCMCIA cards.
+[^2]: When plugged into a Dell Thunderbolt 4 dock (`SD25TB4`), it does not output to a display. You *can* get a output, provided that you start macOS with the lid closed and disable WhateverXe.
 
 ---
 
