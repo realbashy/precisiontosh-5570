@@ -38,7 +38,7 @@ An actively maintained OpenCore 1.0.8 EFI guide for running macOS Tahoe 26.7.2 o
 | **Battery / Power** | | `Working` | Accurate readout & AC state via `SMCBatteryManager` |
 
 [^1]: I do not have any other Thunderbolt devices except for the dock for me to test; however if I booted with the dock plugged in, a icon in the menu bar showed up with the option to turn off what it thinks are PCMCIA cards.
-[^2]: When plugged into a Dell Thunderbolt 4 dock (`SD25TB4`), it does not output to a display. You *can* get a output, provided that you start macOS with the lid closed and disable WhateverXe.
+[^2]: When plugged into a Dell Thunderbolt 4 dock (`SD25TB4`), it does not output to a display. You *can* get an unaccelerated output, provided that you start macOS with the lid closed.wha
 
 ---
 
